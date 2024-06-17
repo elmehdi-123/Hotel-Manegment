@@ -10,7 +10,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {HomeComponent} from "./home/home.component";
 import { HotelModule } from './hotels/hotel.module';
 import {AppRoutingModule} from "./app-routing.module";
-import {RouterLink, RouterOutlet} from "@angular/router";
+import {RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 
 registerLocaleData(localeFr , 'fr');
 @NgModule({
@@ -25,7 +25,8 @@ registerLocaleData(localeFr , 'fr');
     HotelModule,
     AppRoutingModule,
     RouterLink,
-    RouterOutlet
+    RouterOutlet,
+    RouterLinkActive
   ],
   providers: [],
   bootstrap: [AppComponent]

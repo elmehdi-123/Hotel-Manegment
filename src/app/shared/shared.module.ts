@@ -1,9 +1,8 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {FormsModule} from "@angular/forms";
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {StarRatingComponent} from "./components/star-rating/star-rating.component";
 import {ReplaceComma} from "./pipes/replace-comma.pipe";
-
 
 
 @NgModule({
@@ -14,11 +13,13 @@ import {ReplaceComma} from "./pipes/replace-comma.pipe";
   imports: [
     CommonModule
   ],
-  exports:[
+  exports: [
     CommonModule,
     FormsModule,
     StarRatingComponent,
+    ReactiveFormsModule,
     ReplaceComma
   ]
 })
-export class SharedModule { }
+export class SharedModule {
+}
