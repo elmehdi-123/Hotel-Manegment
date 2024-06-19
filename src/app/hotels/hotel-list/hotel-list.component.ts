@@ -49,7 +49,7 @@ export class HotelListComponent implements OnInit{
   public filterHotels(criteria:string): IHotel[]{
     criteria = criteria.toLowerCase();
     const res = this.hotels.filter(
-      (hotel) => hotel.hotelName.toLowerCase().indexOf(criteria) !== -1
+      (hotel) => hotel.hotelName?.toLowerCase().indexOf(criteria) !== -1
     );
 
     return res;

@@ -1,28 +1,31 @@
 import {Injectable} from "@angular/core";
 import {IHotel} from "../models/hotel";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {catchError, find, map, Observable, tap, throwError} from "rxjs";
+import {catchError, map, Observable, of, tap, throwError} from "rxjs";
 
 @Injectable({
-  providedIn:'root'
+  providedIn: 'root'
 })
-export class HotelListService{
+export class HotelListService {
 
   private readonly HOTEL_API_URL = 'api/hotels.json';
 
-  constructor(private http:HttpClient) {
+  constructor(private http: HttpClient) {
   }
 
-  public getHotels():Observable<IHotel[]>{
+  public getHotels(): Observable<IHotel[]> {
     return this.http.get<IHotel[]>(this.HOTEL_API_URL).pipe(
-      tap(hotels => console.log('Hotels: ',hotels)),
+      tap(hotels => console.log('Hotels: ', hotels)),
       catchError(this.handleError)
     );
   }
 
-  public getHotelsById(id:number):Observable<IHotel | undefined>{
+  public getHotelsById(id: number): Observable<IHotel | undefined> {
+    if (id === 0) {
+      return of(this.getDefaultHotel());
+    }
     return this.getHotels().pipe(
-      map((hotels:IHotel[]) => hotels.find(hotel => hotel.hotelId === id))
+      map((hotels: IHotel[]) => hotels.find(hotel => hotel.hotelId === id))
     );
   }
 
@@ -38,5 +41,16 @@ export class HotelListService{
     }
     // Return an observable with a user-facing error message.
     return throwError(() => new Error('Something bad happened; please try again later.'));
+  }
+
+  public getDefaultHotel(): IHotel {
+    return {
+      hotelId: null,
+      hotelName: null,
+      description: null,
+      price: null,
+      imageUrl: null,
+      rating: null
+    };
   }
 }
