@@ -1,7 +1,7 @@
 <div class="card">
   <div class="card-header text-white bg-info">Create Hotel</div>
   <div class="card-body">
-    <form novalidate [formGroup]="test">
+    <form novalidate [formGroup]="hotelForm" (ngSubmit)="saveHotel()">
       <div class="form-group row mb-2">
         <label for="hotelNameId" class="col-md-2 col-form-label">Hotel Name</label>
         <div class="col-md-8">
@@ -48,11 +48,11 @@
       <div class="form-group row mb-2">
         <div class="offset-md-2 col-md-4">
           <button class="btn btn-info me-3" type="submit">Save</button>
-          <button class="btn btn-outline-secondary me-3" type="submit">Cancel</button>
+          <button class="btn btn-outline-secondary me-3" type="submit" [routerLink]="['/hotels']">Cancel</button>
           <button class="btn btn-outline-danger me-3" type="submit">Delete</button>
         </div>
       </div>
     </form>
   </div>
 </div>
-<pre>{{test.value | json}}</pre>
+<pre>{{hotelForm.value | json}}</pre>

@@ -1,5 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {ActivatedRoute} from "@angular/router";
+import {HotelListService} from "../shared/services/hotel-list.service";
+import {IHotel} from "../shared/models/hotel";
 
 @Component({
   selector: 'app-hotel-edit',
@@ -8,16 +11,19 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 })
 export class HotelEditComponent implements OnInit {
 
-  public test: FormGroup = this.fn.group({});
+
+  public hotelForm: FormGroup = this.fn.group({});
+
+  public hotel:IHotel = <IHotel>{};
 
   constructor(
-    private fn: FormBuilder
-  ) {
-
-  }
+    private fn: FormBuilder,
+    public rout:ActivatedRoute,
+    public hotelListService:HotelListService
+  ) {}
 
   ngOnInit() {
-    this.test = this.fn.group(
+    this.hotelForm = this.fn.group(
       {
         hotelName: ['', Validators.required],
         hotelPrice: ['', Validators.required],
@@ -25,5 +31,30 @@ export class HotelEditComponent implements OnInit {
         description: ['']
       }
     );
+    this.rout.paramMap.subscribe(param => {
+      const id = Number(param.get('id'));
+      console.log(id);
+      this.getSelectedHotel(id);
+    })
   }
+  public saveHotel():void{
+    console.log(this.hotelForm.value);
+  }
+  public getSelectedHotel(id:number){
+    this.hotelListService.getHotelsById(id).subscribe((hotel:any) =>{
+      this.displayHotel(hotel);
+    });
+  }
+
+  public displayHotel(hotel:IHotel){
+    this.hotel = hotel;
+
+    this.hotelForm.patchValue({
+      hotelName:this.hotel.hotelName,
+      hotelPrice:this.hotel.price,
+      starRating:this.hotel.rating,
+      description:this.hotel.description
+    });
+  }
+
 }
