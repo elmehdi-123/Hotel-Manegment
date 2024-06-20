@@ -1,5 +1,5 @@
 export interface IHotel {
-  hotelId: number | null;
+  id: number | null;
   hotelName: string | null;
   description: string | null;
   price: number | null;

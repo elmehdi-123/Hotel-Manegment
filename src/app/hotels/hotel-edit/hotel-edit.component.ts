@@ -50,8 +50,8 @@ export class HotelEditComponent implements OnInit {
 
   public displayHotel(hotel:IHotel){
     this.hotel = hotel;
-console.log(this.hotel.hotelId)
-    if (this.hotel.hotelId === null){
+console.log(this.hotel.id)
+    if (this.hotel.id === null){
       this.pageTitle = 'Create Hotel';
     }
     else {
