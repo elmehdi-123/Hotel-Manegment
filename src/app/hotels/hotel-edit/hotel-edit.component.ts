@@ -30,17 +30,18 @@ export class HotelEditComponent implements OnInit {
     this.hotelForm = this.fn.group(
       {
         hotelName: ['', Validators.required],
-        hotelPrice: ['', Validators.required],
-        starRating: [''],
+        price: ['', Validators.required],
+        rating: [''],
         description: ['']
       }
     );
     this.rout.paramMap.subscribe(param => {
       const id = Number(param.get('id'));
-      console.log(id);
       this.getSelectedHotel(id);
     })
   }
+
+
   public saveHotel():void{
 
     if (this.hotelForm.valid){
@@ -50,8 +51,10 @@ export class HotelEditComponent implements OnInit {
           ...this.hotel,
           ...this.hotelForm.value
         };
-        if (hotel.id === 0){
-          //
+        if (hotel.id === null){
+          this.hotelListService.createHotel(hotel).subscribe({
+            next: () => this.saveCompleted()
+          });
         }
         else {
           this.hotelListService.updateHotel(hotel).subscribe({
@@ -64,23 +67,22 @@ export class HotelEditComponent implements OnInit {
   public getSelectedHotel(id:number){
     this.hotelListService.getHotelsById(id).subscribe((hotel:any) =>{
       this.displayHotel(hotel);
+
     });
   }
 
   public displayHotel(hotel:IHotel){
     this.hotel = hotel;
-console.log(this.hotel.id)
     if (this.hotel.id === null){
       this.pageTitle = 'Create Hotel';
     }
     else {
       this.pageTitle = `Edit Hotel ${this.hotel.hotelName}`;
     }
-
     this.hotelForm.patchValue({
       hotelName:this.hotel.hotelName,
-      hotelPrice:this.hotel.price,
-      starRating:this.hotel.rating,
+      price:this.hotel.price,
+      rating:this.hotel.rating,
       description:this.hotel.description
     });
   }
