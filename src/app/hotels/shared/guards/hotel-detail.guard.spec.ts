@@ -1,17 +1,16 @@
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn } from '@angular/router';
 
-import { hotelDetailGuard } from './hotel-detail.guard';
+import { HotelDetailsGuard } from './hotel-detail.guard';
 
-describe('hotelDetailGuard', () => {
-  const executeGuard: CanActivateFn = (...guardParameters) => 
-      TestBed.runInInjectionContext(() => hotelDetailGuard(...guardParameters));
+describe('HotelDetailsGuard', () => {
+  let guard: HotelDetailsGuard;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
+    guard = TestBed.inject(HotelDetailsGuard);
   });
 
   it('should be created', () => {
-    expect(executeGuard).toBeTruthy();
+    expect(guard).toBeTruthy();
   });
 });

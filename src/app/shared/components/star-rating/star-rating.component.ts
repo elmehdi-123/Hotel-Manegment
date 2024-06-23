@@ -6,21 +6,23 @@ import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from "
   styleUrls: ['star-rating.component.css']
 })
 
-export class StarRatingComponent implements OnChanges{
+export class StarRatingComponent implements OnChanges {
 
-  public starWidth:number = 0;
+  public starWidth: number = 0;
 
   @Input()
 
-  public rating:number = 0;
+  public rating: number = 0;
 
   @Output()
 
   public starRatingClicked: EventEmitter<string> = new EventEmitter<string>();
-    ngOnChanges(changes: SimpleChanges) {
-  this.starWidth = this.rating * 125 / 5;
-}
-public sendRating(){
-      this.starRatingClicked.emit(`the is a value of ${this.rating}`)
-}
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.starWidth = this.rating * 125 / 5;
+  }
+
+  public sendRating() {
+    this.starRatingClicked.emit(`the is a value of ${this.rating}`)
+  }
 }

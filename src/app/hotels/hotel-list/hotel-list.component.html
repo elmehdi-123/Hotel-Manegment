@@ -2,35 +2,51 @@
   <h1 *ngIf="hotels && hotels.length > 0">{{ title }}</h1>
   <button class="btn btn-primary d-flex" (click)="toggleIsNewBadge()">
     <span class="material-icons">
-      {{showBadge ? 'visibility_off' : 'visibility'}}
+      {{ showBadge ? 'visibility_off' : 'visibility' }}
     </span>
-    <span class="ms-2"> {{showBadge ? 'Hid' : 'Show'}} New</span></button>
-<hr>
+    <span class="ms-2"> {{ showBadge ? 'Hid' : 'Show' }} New</span>
+  </button>
+  <hr>
   <div class="my-2">
     <div class="row">
       <div class="col-md-4">
         <span>Filter:</span>
-        <b>{{hotelFilter}}</b>
+        <b>{{ hotelFilter }}</b>
       </div>
-      <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="hotelFilter"></div>
+      <div class="col-md-8">
+        <input type="text" class="form-control" [(ngModel)]="hotelFilter" placeholder="Search hotels">
+      </div>
     </div>
   </div>
-  <div class="alert alert-primary" *ngIf="receivedRating">{{receivedRating}}</div>
+  <div class="alert alert-primary" *ngIf="receivedRating">{{ receivedRating }}</div>
   <div class="row row-cols-1 row-cols-md-3 g-4">
-    <div class="col" *ngFor="let hotel of filteredHotels" >
+    <div class="col" *ngFor="let hotel of filteredHotels">
       <div class="card">
-        <img [src]="hotel.imageUrl" [title]="hotel.hotelName | uppercase" class="card-img-top" [alt]="hotel.hotelName">
+        <img [src]="hotel.imageUrl || 'default-image-url.jpg'"
+             [title]="hotel.hotelName ? hotel.hotelName.toUpperCase() : 'No Name'" class="card-img-top"
+             [alt]="hotel.hotelName || 'No Name'">
         <div class="card-body">
-          <h5 class="card-title">{{ hotel.hotelName }}</h5>
-          <p class="card-text">{{ hotel.description}}</p>
-          <p class="card-text">{{hotel.price | currency: 'EUR': 'symbol': '1.2-2': 'fr' | replaceComma}}</p>
+          <h5 class="card-title">{{ hotel.hotelName || 'No Name' }}</h5>
+          <p class="card-text">{{ hotel.description || 'No Description Available' }}</p>
+          <p
+            class="card-text">{{ hotel.price !== null ? (hotel.price | currency: 'EUR': 'symbol': '1.2-2': 'fr' | replaceComma) : 'Price Not Available' }}</p>
           <div class="d-flex justify-content-between align-items-baseline">
-            <app-star-rating [rating] = hotel.rating  (starRatingClicked)="receiveRatingClick($event)"></app-star-rating>
-            <span class="material-icons bg-info text-white p-2 rounded-circle btn" [routerLink]="['/hotels', hotel.hotelId]">
-            keyboard_arrow_right
-          </span>
+            <app-star-rating [rating]="hotel.rating || 0"
+                             (starRatingClicked)="receiveRatingClick($event)"></app-star-rating>
+            <span class="material-icons bg-primary text-white p-2 rounded-circle btn"
+                  [routerLink]="['/hotels', hotel.id, 'edit']">
+              edit
+            </span>
+            <span class="material-icons bg-info text-white p-2 rounded-circle btn"
+                  [routerLink]="['/hotels', hotel.id]">
+              keyboard_arrow_right
+            </span>
           </div>
-          <span class="badge rounded-pill bg-info text-white" *ngIf="showBadge">New</span>
+          <ng-container *ngFor="let tag of hotel.tags;let i = index">
+            <ng-container *ngIf="showBadge">
+              <span class="badge rounded-pill text-white" [ngClass]="i % 2 === 0 ? 'bg-info me-2':'bg-success me-2'" >{{ tag }}</span>
+            </ng-container>
+          </ng-container>
         </div>
       </div>
     </div>
