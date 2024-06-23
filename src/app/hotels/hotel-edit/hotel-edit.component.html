@@ -1,6 +1,8 @@
 <ng-container *ngIf="errorMessage">
-  <div class="alert alert-danger">
+  <div class="alert alert-danger d-flex align-items-center">
+    <span class="material-icons me-2">error</span>
     {{errorMessage}}
+    <span class="material-icons ms-auto" (click)="hideError()">close</span>
   </div>
 </ng-container>
 <div class="card">
@@ -16,7 +18,12 @@
             type="text"
             class="form-control"
             formControlName = "hotelName"
-            placeholder="Name(required)">
+            placeholder="Name(required)"
+          [ngClass]="{'is-invalid': formErrors['hotelName']}"
+          >
+          <span class="invalid-feedback">
+            {{formErrors['hotelName']}}
+          </span>
         </div>
       </div>
       <div class="form-group row mb-2">
@@ -27,8 +34,12 @@
             type="text"
             class="form-control"
             formControlName="price"
-            placeholder="Price(required)">
+            placeholder="Price(required)"
+            [ngClass]="{'is-invalid': formErrors['price']}"
+          >
+          <span class="invalid-feedback">{{formErrors['price']}}</span>
         </div>
+
       </div>
       <div class="form-group row mb-2">
         <label for="starRatingId" class="col-md-2 col-form-label">Rating</label>
@@ -38,7 +49,10 @@
             type="text"
             class="form-control"
             formControlName="rating"
-            placeholder="Rating(1-5)">
+            placeholder="Rating(1-5)"
+            [ngClass]="{'is-invalid': formErrors['rating']}"
+          >
+          <span class="invalid-feedback">{{formErrors['rating']}}</span>
         </div>
       </div>
       <div formArrayName="tags">
@@ -105,4 +119,3 @@
     </form>
   </div>
 </div>
-<pre>{{hotelForm.value | json}}</pre>
