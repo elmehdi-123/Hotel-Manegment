@@ -1,16 +1,20 @@
-import {Component, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChildren} from '@angular/core';
+import {FormArray, FormBuilder, FormControl, FormControlName, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HotelListService} from "../shared/services/hotel-list.service";
 import {IHotel} from "../shared/models/hotel";
+import {GlobalGenericValidator} from "../shared/validators/global-generic.validator";
+import {debounce, EMPTY, fromEvent, merge, Observable, timer} from "rxjs";
+import {NumbersValidator} from "../shared/validators/numbers.validator";
 
 @Component({
   selector: 'app-hotel-edit',
   templateUrl: './hotel-edit.component.html',
   styleUrls: ['./hotel-edit.component.css']
 })
-export class HotelEditComponent implements OnInit {
+export class HotelEditComponent implements OnInit, AfterViewInit {
 
+  @ViewChildren(FormControlName, { read: ElementRef }) inputElements: ElementRef[]
 
   public hotelForm: FormGroup = this.fn.group({});
 
@@ -20,6 +24,23 @@ export class HotelEditComponent implements OnInit {
 
   public errorMessage:string
 
+  public isFormSubmitted: boolean
+
+  private validationMessages: { [key: string]: { [key: string]: string } } = {
+    price: {required: 'price of the hotel is mandatory',
+      pattern: 'the price must be a number'},
+  hotelName: {
+    required: 'name of the hotel is mandatory',
+    minlength: 'name of the hotel must contain at least 4 characters'
+  },
+    rating: {
+      range: 'give a number between 1 and 5'
+    }
+  }
+
+  private globalGenericValidator: GlobalGenericValidator
+
+public formErrors: { [key: string]: string } = {}
 
   constructor(
     private fn: FormBuilder,
@@ -29,19 +50,34 @@ export class HotelEditComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.globalGenericValidator = new GlobalGenericValidator(this.validationMessages)
     this.hotelForm = this.fn.group(
       {
-        hotelName: ['', Validators.required],
-        price: ['', Validators.required],
-        rating: [''],
+        hotelName: ['', [Validators.required, Validators.minLength(4)]],
+        price: ['', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/)]],
+        rating: ['', NumbersValidator.range(1, 5)],
         tags: this.fn.array([]),
         description: ['']
       }
     );
+
+
+
     this.rout.paramMap.subscribe(param => {
       const id = Number(param.get('id'));
       this.getSelectedHotel(id);
     })
+  }
+
+  ngAfterViewInit() {
+
+    const formControlBlurs: Observable<unknown>[] = this.inputElements
+      .map((formControlElementRef: ElementRef) => fromEvent(formControlElementRef.nativeElement, 'blur'));
+
+    merge(this.hotelForm.valueChanges, ...formControlBlurs).pipe(debounce(() => this.isFormSubmitted ? EMPTY : timer(1000))).subscribe(() => {
+      this.formErrors = this.globalGenericValidator.createErrorMessage(this.hotelForm, this.isFormSubmitted);
+      console.log('errors: ', this.formErrors);
+    });
   }
 
   public get tags(): FormArray {
@@ -57,6 +93,14 @@ export class HotelEditComponent implements OnInit {
   }
 
   public saveHotel():void{
+    this.isFormSubmitted = true
+
+    this.hotelForm.updateValueAndValidity({
+      onlySelf: true,
+      emitEvent: true
+    })
+    this.formErrors = this.globalGenericValidator.createErrorMessage(this.hotelForm, this.isFormSubmitted);
+    console.log('errors on submit: ', this.formErrors);
 
     if (this.hotelForm.valid){
       if (this.hotelForm.dirty){
@@ -78,6 +122,9 @@ export class HotelEditComponent implements OnInit {
           });
         }
       }
+    }
+    else {
+      this.errorMessage = 'Please correct the errors'
     }
   }
   public getSelectedHotel(id:number){
@@ -115,6 +162,10 @@ this.hotelListService.deleteHotel(this.hotel.id).subscribe({
   next: () => this.saveCompleted()
 })
     }
+  }
+
+  public hideError():void{
+    this.errorMessage = null
   }
 
 }

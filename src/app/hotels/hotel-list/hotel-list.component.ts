@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { IHotel } from '../shared/models/hotel';
 import { HotelListService } from '../shared/services/hotel-list.service';
 
@@ -8,6 +8,9 @@ import { HotelListService } from '../shared/services/hotel-list.service';
   styleUrls: ['./hotel-list.component.css']
 })
 export class HotelListComponent implements OnInit {
+
+
+
   public title = 'Hotel List';
   public hotels: IHotel[] = [];
   public showBadge: boolean = true;
