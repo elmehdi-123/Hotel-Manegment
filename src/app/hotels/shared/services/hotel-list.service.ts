@@ -39,10 +39,18 @@ export class HotelListService {
   }
 
   public updateHotel(hotel: IHotel): Observable<IHotel> {
-    const url = `${this.HOTEL_API_URL}/${hotel.id}`;
+    const url = `${this.HOTEL_API_URL}/${hotel.id}22222`;
     return this.http.put<IHotel>(url, hotel).pipe(
       catchError(this.handleError)
     );
+  }
+
+  public deleteHotel(id:number):Observable<{}>{
+    const  url = `${this.HOTEL_API_URL}/${id}`
+
+    return  this.http.delete<IHotel>(url).pipe(
+      catchError(this.handleError)
+    )
   }
 
   private handleError(error: HttpErrorResponse) {
@@ -53,7 +61,7 @@ export class HotelListService {
       errorMessage = `Backend returned code ${error.status}, body was: ${error.error}`;
     }
     console.error(errorMessage);
-    return throwError(() => new Error('Something bad happened; please try again later.'));
+    return throwError(() => new Error('Something bad happened; please try again later.' + errorMessage));
   }
 
   public getDefaultHotel(): IHotel {

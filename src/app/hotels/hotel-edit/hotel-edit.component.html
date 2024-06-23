@@ -1,5 +1,11 @@
+<ng-container *ngIf="errorMessage">
+  <div class="alert alert-danger">
+    {{errorMessage}}
+  </div>
+</ng-container>
 <div class="card">
   <div class="card-header text-white bg-info">{{ pageTitle }}</div>
+
   <div class="card-body">
     <form novalidate [formGroup]="hotelForm" (ngSubmit)="saveHotel()">
       <div class="form-group row mb-2">
@@ -35,6 +41,45 @@
             placeholder="Rating(1-5)">
         </div>
       </div>
+      <div formArrayName="tags">
+        <div class="form-group row mb-2"
+             *ngFor="let tag of tags.controls; let i = index">
+            <label class="col-md-2 col-form-label" [for]="i">
+              {{ "Tag " + i }}
+            </label>
+
+          <div class="col-md-8">
+              <input
+                class="form-control"
+                [id]="i"
+                type="text"
+                placeholder="{{ 'Tag ' + i }}"
+                [formControlName]="i"
+              />
+            </div>
+              <button
+                class="col-md-1 btn btn-outline-danger btn-sm"
+                type="button"
+                title="Delete this search tag"
+                (click)="deleteTag(i)"
+              >
+                Cancel
+              </button>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-2 mb-2">
+              <button
+                class="btn btn-outline-primary btn-sm"
+                type="button"
+                title="Add a Tag"
+                (click)="addTag()"
+              >
+                Add a Tag
+              </button>
+          </div>
+        </div>
       <div class="form-group row mb-2">
         <label for="descriptionId" class="col-md-2 col-form-label">Description</label>
         <div class="col-md-8">
@@ -49,7 +94,12 @@
         <div class="offset-md-2 col-md-4">
           <button class="btn btn-info me-3" type="submit">Save</button>
           <button class="btn btn-outline-secondary me-3" type="submit" [routerLink]="['/hotels']">Cancel</button>
-          <button class="btn btn-outline-danger me-3" type="submit">Delete</button>
+          <button
+            class="btn btn-outline-danger me-3"
+            type="submit"
+            [disabled]="hotel.id === null"
+            (click)="deleteHotel()"
+          >Delete</button>
         </div>
       </div>
     </form>

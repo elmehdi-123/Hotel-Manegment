@@ -13,6 +13,7 @@ export class HotelData implements  InMemoryDbService {
        price: 230.5,
        imageUrl: 'assets/img/hotel-room.jpg',
        rating: 3.5,
+       tags:['New']
      }, {
        id: 2,
        hotelName: 'Marakech',
@@ -20,6 +21,7 @@ export class HotelData implements  InMemoryDbService {
        price: 145.5,
        imageUrl: 'assets/img/the-interior.jpg',
        rating: 5,
+       tags:['New']
      }, {
        id: 3,
        hotelName: 'Abudja new look palace',
@@ -27,6 +29,7 @@ export class HotelData implements  InMemoryDbService {
        price: 120.12,
        imageUrl: 'assets/img/indoors.jpg',
        rating: 4,
+       tags:['New']
      }, {
        id: 4,
        hotelName: 'Cape town city',
@@ -34,6 +37,7 @@ export class HotelData implements  InMemoryDbService {
        price: 135.12,
        imageUrl: 'assets/img/window.jpg',
        rating: 2.5,
+       tags:['New']
      }
    ];
 

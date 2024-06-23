@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HotelListService} from "../shared/services/hotel-list.service";
 import {IHotel} from "../shared/models/hotel";
@@ -18,6 +18,8 @@ export class HotelEditComponent implements OnInit {
 
   public pageTitle:string = '';
 
+  public errorMessage:string
+
 
   constructor(
     private fn: FormBuilder,
@@ -32,6 +34,7 @@ export class HotelEditComponent implements OnInit {
         hotelName: ['', Validators.required],
         price: ['', Validators.required],
         rating: [''],
+        tags: this.fn.array([]),
         description: ['']
       }
     );
@@ -41,6 +44,17 @@ export class HotelEditComponent implements OnInit {
     })
   }
 
+  public get tags(): FormArray {
+    return this.hotelForm.get('tags') as FormArray;
+  }
+
+  public addTag(): void {
+    this.tags.push(new FormControl());
+  }
+  public deleteTag(index: number): void {
+    this.tags.removeAt(index);
+    this.tags.markAsDirty();
+  }
 
   public saveHotel():void{
 
@@ -53,12 +67,14 @@ export class HotelEditComponent implements OnInit {
         };
         if (hotel.id === null){
           this.hotelListService.createHotel(hotel).subscribe({
-            next: () => this.saveCompleted()
+            next: () => this.saveCompleted(),
+            error: (err) => this.errorMessage = err
           });
         }
         else {
           this.hotelListService.updateHotel(hotel).subscribe({
-            next: () => this.saveCompleted()
+            next: () => this.saveCompleted(),
+            error: (err) => this.errorMessage = err
           });
         }
       }
@@ -85,10 +101,20 @@ export class HotelEditComponent implements OnInit {
       rating:this.hotel.rating,
       description:this.hotel.description
     });
+    this.hotelForm.setControl('tags',this.fn.array(this.hotel.tags || []))
   }
 
   public saveCompleted():void{
     this.hotelForm.reset();
     this.router.navigate(['/hotels']).catch(() => {});
   }
+
+  public deleteHotel():void{
+    if (confirm(`Do you really want to delete ${this.hotel.hotelName} ?`)){
+this.hotelListService.deleteHotel(this.hotel.id).subscribe({
+  next: () => this.saveCompleted()
+})
+    }
+  }
+
 }

@@ -42,7 +42,11 @@
               keyboard_arrow_right
             </span>
           </div>
-          <span class="badge rounded-pill bg-info text-white" *ngIf="showBadge">New</span>
+          <ng-container *ngFor="let tag of hotel.tags;let i = index">
+            <ng-container *ngIf="showBadge">
+              <span class="badge rounded-pill text-white" [ngClass]="i % 2 === 0 ? 'bg-info me-2':'bg-success me-2'" >{{ tag }}</span>
+            </ng-container>
+          </ng-container>
         </div>
       </div>
     </div>

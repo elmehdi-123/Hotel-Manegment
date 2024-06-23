@@ -10,7 +10,7 @@ import { HotelListService } from '../shared/services/hotel-list.service';
 export class HotelListComponent implements OnInit {
   public title = 'Hotel List';
   public hotels: IHotel[] = [];
-  public showBadge: boolean = false;
+  public showBadge: boolean = true;
   private _hotelFilter = 'Word';
   public filteredHotels: IHotel[] = [];
   public receivedRating: string = '';
